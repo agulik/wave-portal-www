@@ -1,26 +1,31 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import styled from "styled-components";
+// import { ethers } from "ethers";
 
-function App() {
+const Wrapper = styled.div`
+  min-height: 100vh;
+  background: rgb(36, 38, 59);
+  color: white;
+`;
+
+const InnerWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 32px;
+`;
+
+export default function App() {
+  const wave = () => {};
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Wrapper>
+      <InnerWrapper>
+        <h2>👋 Wave Zone</h2>
+
+        <div>Connect your Ethereum wallet and wave at me!</div>
+
+        <button onClick={wave}>Wave at Me</button>
+      </InnerWrapper>
+    </Wrapper>
   );
 }
-
-export default App;
