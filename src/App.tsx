@@ -189,6 +189,7 @@ export default function App() {
   useEffect(() => {
     getAndSetTotalWaves();
     getAndSetAllWaves();
+    // eslint-disable-next-line
   }, [contract]);
 
   const connectWallet = async () => {
