@@ -110,6 +110,25 @@ export default function App() {
   const [message, setMessage] = useState<string>("");
   const [error, setError] = useState<string>("");
 
+  const runSetup = async () => {
+    await checkIfWalletIsConnected();
+    await setupContract();
+    await getAndSetAllWaves();
+    await getAndSetTotalWaves();
+    if (contract) {
+      contract.on("NewWave", (from, timestamp, message) => {
+        setAllWaves((prevState: any) => [
+          ...prevState,
+          {
+            address: from,
+            timestamp: new Date(timestamp * 1000),
+            message: message,
+          },
+        ]);
+      });
+    }
+  };
+
   const checkIfWalletIsConnected = async () => {
     try {
       const { ethereum } = window;
@@ -152,38 +171,35 @@ export default function App() {
 
   const getAndSetTotalWaves = async () => {
     if (contract) {
-      const count = (await contract.getTotalWaves()).toString();
-      setTotalWaveCount(count);
+      try {
+        const count = (await contract.getTotalWaves()).toString();
+        setTotalWaveCount(count);
+      } catch (error) {
+        console.log(error);
+      }
     }
   };
 
   const getAndSetAllWaves = async () => {
     if (contract) {
-      const waves = await contract.getAllWaves();
-      const wavesFormatted = waves.map((wave: any) => ({
-        address: wave.waver,
-        timestamp: new Date(wave.timestamp * 1000),
-        message: wave.message,
-      }));
+      try {
+        const waves = await contract.getAllWaves();
+        const wavesFormatted = waves.map((wave: any) => ({
+          address: wave.waver,
+          timestamp: new Date(wave.timestamp * 1000),
+          message: wave.message,
+        }));
 
-      setAllWaves(wavesFormatted);
-
-      contract.on("NewWave", (from, timestamp, message) => {
-        setAllWaves((prevState: any) => [
-          ...prevState,
-          {
-            address: from,
-            timestamp: new Date(timestamp * 1000),
-            message: message,
-          },
-        ]);
-      });
+        setAllWaves(wavesFormatted);
+      } catch (error) {
+        console.log(error);
+      }
     }
   };
 
   useEffect(() => {
-    checkIfWalletIsConnected();
-    setupContract();
+    runSetup();
+    // eslint-disable-next-line
   }, []);
 
   useEffect(() => {
@@ -242,7 +258,7 @@ export default function App() {
         <h2>👋 Wave Zone</h2>
 
         <DescriptionWrapper>
-          Connect your Ethereum wallet and wave at me!
+          Connect your Ethereum wallet to Rinkeby and wave at me!
         </DescriptionWrapper>
 
         {!currentAccount && (
